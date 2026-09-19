@@ -46,3 +46,4 @@ $env:OPENAI_API_KEY="your-key"
 - [src/llm_reasoner.py](src/llm_reasoner.py): AI or fallback analysis
 - [data/system_graph.json](data/system_graph.json): Dependency graph data
 - [data/incidents.json](data/incidents.json): Historical incident records
+>>>>>>> 9f34fd7fdea579aa75d3cc3957c910b9f60fbfa3
