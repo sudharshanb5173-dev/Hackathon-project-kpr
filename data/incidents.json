@@ -1,0 +1,82 @@
+[
+  {
+    "id": "INC-2231",
+    "title": "Checkout latency spike after payment retry config change",
+    "affected_components": ["payment-service", "order-service", "api-gateway", "mobile-app"],
+    "root_cause": "Increased retry count caused synchronous blocking in order-service, which cascaded to API gateway timeouts",
+    "change_that_triggered": "payment-service.retry_count: 3 to 10",
+    "date": "2024-08-14",
+    "severity": "high",
+    "resolution": "Reverted retry count and added circuit breaker to order-service"
+  },
+  {
+    "id": "INC-4471",
+    "title": "Auth token expiry change broke billing",
+    "affected_components": ["auth-service", "user-service", "api-gateway"],
+    "root_cause": "Services assumed 24h token validity; shorter expiry caused constant re-authentication storms",
+    "change_that_triggered": "auth-service.token_expiry_hours: 24 to 1",
+    "date": "2024-11-02",
+    "severity": "critical",
+    "resolution": "Updated all services to refresh tokens proactively"
+  },
+  {
+    "id": "INC-3312",
+    "title": "Database connection pool exhaustion",
+    "affected_components": ["postgres-orders", "order-service", "api-gateway"],
+    "root_cause": "Increased concurrent requests overwhelmed fixed connection pool",
+    "change_that_triggered": "order-service.sync_timeout_ms: 5000 to 30000",
+    "date": "2024-09-20",
+    "severity": "critical",
+    "resolution": "Increased pool size and reduced timeout back to 5000ms"
+  },
+  {
+    "id": "INC-1105",
+    "title": "Cache stampede after redis TTL change",
+    "affected_components": ["redis-cache", "product-service", "cart-service", "api-gateway"],
+    "root_cause": "Shorter TTL caused simultaneous cache misses across all instances",
+    "change_that_triggered": "redis-cache.ttl_seconds: 3600 to 60",
+    "date": "2024-06-11",
+    "severity": "medium",
+    "resolution": "Added jitter to TTL and restored longer baseline"
+  },
+  {
+    "id": "INC-5520",
+    "title": "Notification storm from Kafka consumer lag",
+    "affected_components": ["kafka-events", "notification-service", "fraud-detection"],
+    "root_cause": "Consumer group rebalance caused duplicate event processing",
+    "change_that_triggered": "kafka-events.consumer_timeout_ms: 30000 to 5000",
+    "date": "2024-12-01",
+    "severity": "medium",
+    "resolution": "Restored timeout and added idempotency keys"
+  },
+  {
+    "id": "INC-7788",
+    "title": "Fraud detection false positives spike",
+    "affected_components": ["fraud-detection", "payment-service", "order-service"],
+    "root_cause": "Rule threshold change flagged legitimate transactions",
+    "change_that_triggered": "fraud-detection.risk_threshold: 0.7 to 0.4",
+    "date": "2025-01-15",
+    "severity": "high",
+    "resolution": "Reverted threshold and added A/B testing for rule changes"
+  },
+  {
+    "id": "INC-9901",
+    "title": "Inventory overselling after sync change",
+    "affected_components": ["inventory-service", "order-service", "api-gateway"],
+    "root_cause": "Reduced sync frequency caused stale inventory reads",
+    "change_that_triggered": "inventory-service.sync_interval_ms: 1000 to 10000",
+    "date": "2025-02-20",
+    "severity": "critical",
+    "resolution": "Restored sync interval and added read-through cache"
+  },
+  {
+    "id": "INC-6666",
+    "title": "API gateway 502 errors during deploy",
+    "affected_components": ["api-gateway", "auth-service", "user-service"],
+    "root_cause": "Gateway health check timeout shorter than service cold start",
+    "change_that_triggered": "api-gateway.timeout_ms: 30000 to 5000",
+    "date": "2025-03-05",
+    "severity": "high",
+    "resolution": "Increased timeout and added graceful startup"
+  }
+]
