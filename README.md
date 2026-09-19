@@ -32,9 +32,7 @@ A Streamlit app for predicting engineering change impact using a dependency grap
 The app falls back to a built-in analysis if no API key is supplied. If you want AI-generated reasoning, set one of these environment variables before launching:
 
 ```powershell
-$env:OLLAMA_API_KEY="your-key"
-# or
-$env:OPENAI_API_KEY="your-key"
+$env:OLLAMA_API_KEY="9a35ce77ad0d4698b42a62370b5dcc8f.1Jp41BerHJXiCnUh6kmfu1vK"
 ```
 
 ## Project structure
